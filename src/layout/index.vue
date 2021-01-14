@@ -1,11 +1,15 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+    <!-- 左侧菜单栏 -->
     <sidebar class="sidebar-container" />
+    <!-- 右侧栏 -->
     <div class="main-container">
+      <!-- 右侧上方面包屑 -->
       <div :class="{'fixed-header':fixedHeader}">
         <navbar />
       </div>
+      <!-- 右侧下方主内容面板 -->
       <app-main />
     </div>
   </div>
