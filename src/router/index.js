@@ -78,6 +78,29 @@ export const constantRoutes = [
   },
 
   {
+    path: '/goods',
+    component: Layout,
+    redirect: '/goods/classification',
+    name: '商品管理',
+    meta: { title: '商品管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'classificationList',
+        name: '分类管理',
+        component: () => import('@/views/goods/classification/index'),
+        meta: { title: '分类管理', icon: 'el-icon-user' }
+      },
+      
+      {
+        path: 'goodsList',
+        name: '商品维护',
+        component: () => import('@/views/goods/index'),
+        meta: { title: '商品维护', icon: 'el-icon-user' }
+      }
+    ]
+  },
+
+  {
     path: '/userMgr',
     component: Layout,
     redirect: '/userMgr/user',

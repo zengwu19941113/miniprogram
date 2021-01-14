@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import func from "vue-temp/vue-editor-bridge";
+
 export default {
   filters: {},
   data() {
@@ -98,25 +98,30 @@ export default {
   methods: {
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
+      this.page = 1;
+      this.rows = val;
+      this.findUserList();
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      this.page = 1;
+      this.findUserList();
     },
     //获取用户列表
     findUserList: function () {
       this.listLoading = true;
       let baseUrl = "/miniprogram/user/selectPage?page=" + this.page + "&rows=" + this.rows;
-      if(search.userName){
-        baseUrl = baseUrl.concat('&userName=',search.userName);
+      if(this.search.userName){
+        baseUrl = baseUrl.concat('&userName=',this.search.userName);
       }
-      if(search.userAccount){
-        baseUrl = baseUrl.concat('&userAccount=',search.userAccount);
+      if(this.search.userAccount){
+        baseUrl = baseUrl.concat('&userAccount=',this.search.userAccount);
       }
-      if(search.email){
-        baseUrl = baseUrl.concat('&email=',search.email);
+      if(this.search.email){
+        baseUrl = baseUrl.concat('&email=',this.search.email);
       }
-      if(search.phone){
-        baseUrl = baseUrl.concat('&phone=',search.phone);
+      if(this.search.phone){
+        baseUrl = baseUrl.concat('&phone=',this.search.phone);
       }
       this.$get(baseUrl).then((res) => {
           this.listLoading = false;
