@@ -36,7 +36,13 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js')
+    before: require('./mock/mock-server.js'),
+    proxy: {
+      '/miniprogram': {
+        target: 'http://localhost:8080',// 要跨域的域名
+        changeOrigin: true, // 是否开启跨域
+      },
+    }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
