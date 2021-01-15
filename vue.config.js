@@ -31,15 +31,15 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     port: port,
-    open: true,
+    open: false,
     overlay: {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js'),
+    //before: require('./mock/mock-server.js'),
     proxy: {
       '/miniprogram': {
-        target: 'http://localhost:8080',// 要跨域的域名
+        target: 'http://127.0.0.1:8080',// 要跨域的域名
         changeOrigin: true, // 是否开启跨域
       },
     }

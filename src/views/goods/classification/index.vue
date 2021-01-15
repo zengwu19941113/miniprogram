@@ -169,13 +169,12 @@ export default {
     findGoodsClass: function () {
       this.listLoading = true;
       let baseUrl = "/miniprogram/goodsClass/selectList";
-      this.$get(baseUrl)
-        .then((res) => {
-          this.listLoading = false;
-          if (res) {
+      this.$get(baseUrl).then((res) => { this.listLoading = false;
+          //debugger
+          if (res && res.length>0) {
+              
           }
-        })
-        .catch((err) => {
+        }).catch((err) => {
           this.listLoading = false;
           this.$message.error("商品分类加载失败！");
         });
@@ -215,7 +214,6 @@ export default {
     },
     //对话框内的点击事件
     editClass:function(type) {
-            debugger
       if (type == "save") {
         //点击确认要执行的代码
         this.$refs.editClass.submitForm();

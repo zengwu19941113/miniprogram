@@ -1,5 +1,6 @@
 <template>
   <el-dialog
+    v-loading="loading"
     :title="titleText"
     :visible.sync="showDialog"
     width="30%"
@@ -50,37 +51,51 @@ export default {
       default: true,
     },
     titleText: {
-      type: String
+      type: String,
     },
-    editType:{
-      type:String
+    editType: {
+      type: String,
     },
-    parentModel:{
-      type:Object,
-      default:function(){
+    parentModel: {
+      type: Object,
+      default: function () {
         return {};
-      }
-    }
+      },
+    },
   },
   data() {
+    //校验编码
+    var validateClassCode =  (rule, value, callback)=> {
+      if (!value) {
+        callback(new Error("请输入分类编码"));
+      } else {
+        this.findByClassCode(value).then((res) => {
+          if (this.type == "add") {
+            if (res && res.length > 0) {
+              callback(new Error("分类编码已存在！"));
+            }
+          }
+          callback();
+        });
+      }
+    };
     return {
+      loading:false,
       showDialog: this.isShowDialog,
       model: {
         className: "",
         classCode: "",
         classDesc: "",
       },
-      codeEnable:false,
-      parentNode:{},
-      type:'',
+      codeEnable: false,
+      parentNode: {},
+      type: "",
       rules: {
         className: [
           { required: true, message: "请输入分类名称", trigger: "blur" },
         ],
-        classCode: [
-          { required: true, message: "请输入分类编码", trigger: "blur" },
-        ],
-      },
+        classCode: [{ validator: validateClassCode, trigger: "blur" }],
+      }
     };
   },
   created() {
@@ -91,38 +106,70 @@ export default {
     submitForm() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          alert(this.type+"表单提交!");
+          //添加分类
+          if (this.type == "add") {
+            this.addGoodsClass();
+          } else if (this.type == "update") {
+            this.updateGoodClass();
+          }
         } else {
           this.$message.error("请合法填写表单信息！");
           return false;
         }
       });
     },
+    //添加产品分类
+    addGoodsClass: function () {
+      this.loading = true;
+      this.$post("/miniprogram/goodsClass/add",this.model).then((res) => {
+          this.loading = false;
+          this.$message.success("保存成功！");
+        })
+        .catch((err) => {
+          this.loading = false;
+          this.$message.error("保存失败！");
+        });
+    },
+    //更新产品分类
+    updateGoodClass: function () {},
     //重置
     resetForm() {
       this.$refs.ruleForm.resetFields();
-      this.codeEnable = false
+      this.codeEnable = false;
     },
     childOperation(operation) {
       this.$emit("child-operation", operation);
+    },
+    findByClassCode: function (classCode) {
+      var _this = this
+      return new Promise(function (resolve, reject) {
+        _this.loading = true;
+        _this.$get( "/miniprogram/goodsClass/selectByClassCode?classCode=" + classCode).then((res) => {
+            _this.loading = false;
+            resolve(res);
+          }).catch((err) =>  {
+             _this.loading = false;
+            reject(err);
+          });
+      });
     },
   },
   watch: {
     isShowDialog(val) {
       this.showDialog = val; //②监听外部对props属性result的变更，并同步到组件内的data属性myResult中
     },
-    editType(val){
+    editType(val) {
       this.type = val;
-      if(this.type == 'update'){
+      if (this.type == "update") {
         this.codeEnable = true;
       }
     },
     parentModel: {
-　　　　handler(val) {
-　　　　　　this.parentNode = val;
-　　　　},
-　　　　deep: true
-　　}
+      handler(val) {
+        this.parentNode = val;
+      },
+      deep: true,
+    },
   },
 };
 </script>
